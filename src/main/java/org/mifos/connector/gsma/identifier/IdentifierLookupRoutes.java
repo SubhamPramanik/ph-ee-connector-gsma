@@ -6,6 +6,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
+import org.mifos.connector.common.channel.dto.TransactionChannelRequestDTO;
 import org.mifos.connector.gsma.auth.dto.AccessTokenStore;
 import org.mifos.connector.gsma.identifier.dto.AccountBalanceResponseDTO;
 import org.mifos.connector.gsma.identifier.dto.ErrorDTO;
@@ -137,9 +138,9 @@ public class IdentifierLookupRoutes extends RouteBuilder {
                 .id("account-route")
                 .log(LoggingLevel.INFO, "Getting ${exchangeProperty."+ACCOUNT_ACTION+"} for Identifier")
                 .process(exchange -> {
-                    GSMATransaction channelRequest = objectMapper.readValue(exchange.getProperty(TRANSACTION_BODY, String.class), GSMATransaction.class);
-                    exchange.setProperty(IDENTIFIER_TYPE, channelRequest.getCreditParty()[0].getKey());
-                    exchange.setProperty(IDENTIFIER, channelRequest.getCreditParty()[0].getValue());
+                    TransactionChannelRequestDTO channelRequest = objectMapper.readValue(exchange.getProperty(CHANNEL_REQUEST, String.class), TransactionChannelRequestDTO.class);
+                    exchange.setProperty(IDENTIFIER_TYPE, channelRequest.getPayee().getPartyIdInfo().getPartyIdType().toString().toLowerCase());
+                    exchange.setProperty(IDENTIFIER, channelRequest.getPayee().getPartyIdInfo().getPartyIdentifier());
                 })
                 .to("direct:get-access-token")
                 .process(exchange -> exchange.setProperty(ACCESS_TOKEN, accessTokenStore.getAccessToken()))

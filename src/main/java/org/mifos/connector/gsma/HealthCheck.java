@@ -48,7 +48,7 @@ public class HealthCheck extends RouteBuilder {
         from("rest:POST:/account/{accountAction}")
                 .process(exchange -> {
                     exchange.setProperty(CORELATION_ID, generateUUID());
-                    exchange.setProperty(TRANSACTION_BODY, exchange.getIn().getBody(String.class));
+                    exchange.setProperty(CHANNEL_REQUEST, exchange.getIn().getBody(String.class));
                     exchange.setProperty(ACCOUNT_ACTION, exchange.getIn().getHeader("accountAction")); // Get's hardcoded in Zeebe Worker
                 })
                 .to("direct:account-route")
@@ -57,7 +57,7 @@ public class HealthCheck extends RouteBuilder {
         from("rest:POST:/transfer")
                 .process(exchange -> {
                     exchange.setProperty(CORELATION_ID, generateUUID());
-                    exchange.setProperty(TRANSACTION_BODY, exchange.getIn().getBody(String.class));
+                    exchange.setProperty(CHANNEL_REQUEST, exchange.getIn().getBody(String.class));
                 })
                 .to("direct:transfer-route");
 
@@ -82,6 +82,15 @@ public class HealthCheck extends RouteBuilder {
                     variables.put("transactionId", generateUUID());
                     variables.put("channelBody", exchange.getIn().getBody(String.class));
                     zeebeProcessStarter.startZeebeWorkflow("gsma_p2p_base", variables);
+                });
+
+        from("rest:POST:/zeebe/fineractTest")
+                .process(exchange -> {
+                    Map<String, Object> variables = new HashMap<>();
+                    variables.put("transactionId", generateUUID());
+                    variables.put("channelRequest", exchange.getIn().getBody(String.class));
+                    variables.put("tenantId", "tn05");
+                    zeebeProcessStarter.startZeebeWorkflow("fineract-test", variables);
                 });
     }
 
