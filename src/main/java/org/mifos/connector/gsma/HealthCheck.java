@@ -80,7 +80,8 @@ public class HealthCheck extends RouteBuilder {
                 .process(exchange -> {
                     Map<String, Object> variables = new HashMap<>();
                     variables.put("transactionId", generateUUID());
-                    variables.put("channelBody", exchange.getIn().getBody(String.class));
+                    variables.put("channelRequest", exchange.getIn().getBody(String.class));
+                    variables.put("tenantId", "tn05");
                     zeebeProcessStarter.startZeebeWorkflow("gsma_p2p_base", variables);
                 });
 

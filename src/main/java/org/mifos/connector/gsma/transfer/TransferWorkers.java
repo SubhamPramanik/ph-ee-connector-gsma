@@ -46,7 +46,7 @@ public class TransferWorkers {
 
                     Exchange exchange = new DefaultExchange(camelContext);
                     exchange.setProperty(CORELATION_ID, variables.get("transactionId"));
-                    exchange.setProperty(CHANNEL_REQUEST, variables.get("channelBody"));
+                    exchange.setProperty(CHANNEL_REQUEST, variables.get("channelRequest"));
 
                     producerTemplate.send("direct:transfer-route", exchange);
 
