@@ -84,7 +84,7 @@ public class TransferRoutes extends RouteBuilder {
                 .setHeader(Exchange.HTTP_METHOD, constant("POST"))
                 .setHeader("X-Date", simple(ZonedDateTime.now( ZoneOffset.UTC ).format( DateTimeFormatter.ISO_INSTANT )))
                 .setHeader("Authorization", simple("Bearer ${exchangeProperty."+ACCESS_TOKEN+"}"))
-                .setHeader("X-Callback-URL", constant("http://f4b0d0f54f5f.ngrok.io/transfer/callback")) // TODO: Remove hard coded value
+                .setHeader("X-Callback-URL", constant("https://shrouded-brushlands-27137.herokuapp.com/transfer/callback")) // TODO: Remove hard coded value
                 .setHeader("X-CorrelationID", simple("${exchangeProperty."+CORELATION_ID+"}"))
                 .setHeader("Content-Type", constant("application/json"))
                 .setBody(exchange -> exchange.getProperty(TRANSACTION_BODY))
