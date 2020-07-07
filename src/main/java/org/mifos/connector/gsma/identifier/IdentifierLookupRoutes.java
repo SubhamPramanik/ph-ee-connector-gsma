@@ -60,7 +60,6 @@ public class IdentifierLookupRoutes extends RouteBuilder {
                 .id("account-error")
                 .unmarshal().json(JsonLibrary.Jackson, ErrorDTO.class)
                 .process(exchange -> {
-                    exchange.setProperty(ACCOUNT_RESPONSE, exchange.getIn().getBody(ErrorDTO.class).getErrorDescription()); // To be removed
                     logger.error(exchange.getIn().getBody(ErrorDTO.class).toString());
                 })
                 .setProperty(PARTY_LOOKUP_FAILED, constant(true))
@@ -83,9 +82,7 @@ public class IdentifierLookupRoutes extends RouteBuilder {
                         .to("direct:account-name-handler")
                     .otherwise()
                         .log(LoggingLevel.INFO, "No routing specified for this type of action.")
-                        .process(exchange -> {
-//                            TODO: Add logic for else cases
-                        });
+                        .process(exchange -> { });
 
         /**
          * Account balance response handler

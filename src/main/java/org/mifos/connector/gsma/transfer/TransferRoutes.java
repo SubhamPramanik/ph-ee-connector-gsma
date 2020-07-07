@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.net.InetAddress;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -37,6 +38,9 @@ public class TransferRoutes extends RouteBuilder {
 
     @Value("${gsma.api.host}")
     private String BaseURL;
+
+    @Value("${camel.host}")
+    private String HostURL;
 
     @Autowired
     private CorrelationIDStore correlationIDStore;
@@ -84,7 +88,7 @@ public class TransferRoutes extends RouteBuilder {
                 .setHeader(Exchange.HTTP_METHOD, constant("POST"))
                 .setHeader("X-Date", simple(ZonedDateTime.now( ZoneOffset.UTC ).format( DateTimeFormatter.ISO_INSTANT )))
                 .setHeader("Authorization", simple("Bearer ${exchangeProperty."+ACCESS_TOKEN+"}"))
-                .setHeader("X-Callback-URL", constant("http://f4b0d0f54f5f.ngrok.io/transfer/callback")) // TODO: Remove hard coded value
+                .setHeader("X-Callback-URL", simple(HostURL + "/transfer/callback")) // TODO: Remove hard coded value
                 .setHeader("X-CorrelationID", simple("${exchangeProperty."+CORELATION_ID+"}"))
                 .setHeader("Content-Type", constant("application/json"))
                 .setBody(exchange -> exchange.getProperty(TRANSACTION_BODY))

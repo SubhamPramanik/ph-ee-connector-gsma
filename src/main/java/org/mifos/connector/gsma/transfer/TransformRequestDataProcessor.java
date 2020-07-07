@@ -40,7 +40,7 @@ public class TransformRequestDataProcessor implements Processor {
         String amount = channelRequest.getAmount().getAmount();
         String currency = channelRequest.getAmount().getCurrency();
 
-        String type = "transfer"; // TODO: Change as per transactionType
+        String type = channelRequest.getTransactionType().getScenario().toString().toLowerCase();
 
         gsmaTransaction.setAmount(amount);
         gsmaTransaction.setCurrency(currency);
